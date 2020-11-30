@@ -2,11 +2,13 @@ package commands
 
 import (
 	"errors"
+	"io/ioutil"
 	"os"
 	"strconv"
 
 	"github.com/jfrog/jfrog-cli-core/plugins/components"
 	"github.com/jfrog/jfrog-client-go/utils/log"
+	"gopkg.in/yaml.v2"
 )
 
 // GetCreateCommand will create the repo and permissions
@@ -60,24 +62,39 @@ func getCreateFlags() []components.Flag {
 // 	prefix    string
 // }
 
+// Project describes a project to create
+type Project struct {
+	Name     string   `yaml:"name"`
+	RepoType string   `yaml:"repoType"`
+	Stages   []string `yaml:"stages"`
+}
+
+// Projects describes a list of projects
+type Projects struct {
+	ArrProj []Project `yaml:"projects"`
+}
+
 func createCmd(c *components.Context) error {
 
 	if len(c.Arguments) != 1 {
 		return errors.New("Wrong number of arguments. Expected: 1, " + "Received: " + strconv.Itoa(len(c.Arguments)))
 	}
 
-	log.Output("using path : " + c.Arguments[0])
+	log.Output("[INFO] Config file : " + c.Arguments[0])
+
 	_, err := os.Open(c.Arguments[0])
 
 	if err != nil {
-		return err
+		return errors.New("Cannot open " + c.Arguments[0])
 	}
 
-	doCreate(c.GetStringFlagValue("config"), c.GetBoolFlagValue("dry-run"))
+	doCreate(c.Arguments[0], c.GetBoolFlagValue("dry-run"))
 	return nil
 }
 
-func doCreate(configFile string, dryRun bool) {
+func doCreate(configFile string, dryRun bool) error {
+
+	var projectsToInit Projects
 
 	if dryRun {
 		log.Output("DRY RUN")
@@ -85,6 +102,43 @@ func doCreate(configFile string, dryRun bool) {
 		log.Output("REAL RUN")
 	}
 
-	log.Output("PARSE FILE !")
+	// read our opened yaml file as a byte array.
+	byteValue, _ := ioutil.ReadFile(configFile)
 
+	err := yaml.Unmarshal(byteValue, &projectsToInit)
+
+	if err != nil {
+		return errors.New("Errors occured when reading Yaml File ")
+	}
+
+	for _, v := range projectsToInit.ArrProj {
+		log.Output(v.Name)
+		log.Output(v.RepoType)
+		log.Output(v.Stages)
+		CreateRepositories(v.Name, v.RepoType, v.Stages)
+	}
+
+	return nil
+}
+
+// CreateRepositories generates all the repositories
+func CreateRepositories(projectName string, repoType string, stages []string) {
+	CreateLocalRepositories(projectName, repoType, stages)
+	CreateRemoteRepositories(projectName, repoType, stages)
+	CreateVirtualRepositories(projectName, repoType, stages)
+}
+
+// CreateLocalRepositories generates all the local repositories
+func CreateLocalRepositories(projectName string, repoType string, stages []string) {
+	log.Output("Create locals for ", projectName)
+}
+
+// CreateRemoteRepositories generates all the remote repository
+func CreateRemoteRepositories(projectName string, repoType string, stages []string) {
+	log.Output("Create remote for ", projectName)
+}
+
+// CreateVirtualRepositories generates all the remote repository
+func CreateVirtualRepositories(projectName string, repoType string, stages []string) {
+	log.Output("Create virtual for ", projectName)
 }
