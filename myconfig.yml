@@ -1,0 +1,11 @@
+projects:
+    - name: ninja
+      repoType: maven
+      stages: 
+        - dev
+        - rc
+        - release
+      profiles:
+        - dev
+        - ops
+        - devops
