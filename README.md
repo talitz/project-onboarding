@@ -6,15 +6,15 @@ This plugin aims to quickly starts with Artifactory by creating the right reposi
 ## Installation with JFrog CLI
 Installing the latest version:
 
-`$ jfrog plugin install on-boarding`
+`$ jfrog plugin install onboarding`
 
 Installing a specific version:
 
-`$ jfrog plugin install on-boarding@version`
+`$ jfrog plugin install onboarding@version`
 
 Uninstalling a plugin
 
-`$ jfrog plugin uninstall on-boarding`
+`$ jfrog plugin uninstall onboarding`
 
 ## Usage
 ### Commands

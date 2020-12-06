@@ -12,7 +12,7 @@ func main() {
 
 func getApp() components.App {
 	app := components.App{}
-	app.Name = "on-boarding"
+	app.Name = "onboarding"
 	app.Description = "Easily onboard teams by creating their repo structure"
 	app.Version = "v0.1.0"
 	app.Commands = getCommands()
