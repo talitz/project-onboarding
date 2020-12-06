@@ -6,6 +6,9 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/jfrog/jfrog-cli-core/artifactory/commands"
+	"github.com/jfrog/jfrog-cli-core/artifactory/commands/repository"
+
 	"github.com/jfrog/jfrog-cli-core/plugins/components"
 	"github.com/jfrog/jfrog-client-go/utils/log"
 	"gopkg.in/yaml.v2"
@@ -75,6 +78,7 @@ type Projects struct {
 }
 
 func createCmd(c *components.Context) error {
+	conf, err := createCommonConfiguration(c)
 
 	if len(c.Arguments) != 1 {
 		return errors.New("Wrong number of arguments. Expected: 1, " + "Received: " + strconv.Itoa(len(c.Arguments)))
@@ -82,18 +86,17 @@ func createCmd(c *components.Context) error {
 
 	log.Output("[INFO] Config file : " + c.Arguments[0])
 
-	_, err := os.Open(c.Arguments[0])
+	_, err = os.Open(c.Arguments[0])
 
 	if err != nil {
 		return errors.New("Cannot open " + c.Arguments[0])
 	}
 
-	doCreate(c.Arguments[0], c.GetBoolFlagValue("dry-run"))
+	doCreate(c.Arguments[0], c.GetBoolFlagValue("dry-run"), conf)
 	return nil
 }
 
-func doCreate(configFile string, dryRun bool) error {
-
+func doCreate(configFile string, dryRun bool, c *commonConfiguration) error {
 	var projectsToInit Projects
 
 	if dryRun {
@@ -115,30 +118,48 @@ func doCreate(configFile string, dryRun bool) error {
 		log.Output(v.Name)
 		log.Output(v.RepoType)
 		log.Output(v.Stages)
-		CreateRepositories(v.Name, v.RepoType, v.Stages)
+		CreateRepositories(v.Name, v.RepoType, v.Stages, c)
 	}
 
 	return nil
 }
 
 // CreateRepositories generates all the repositories
-func CreateRepositories(projectName string, repoType string, stages []string) {
-	CreateLocalRepositories(projectName, repoType, stages)
-	CreateRemoteRepositories(projectName, repoType, stages)
-	CreateVirtualRepositories(projectName, repoType, stages)
+func CreateRepositories(projectName string, repoType string, stages []string, c *commonConfiguration) {
+	CreateLocalRepositories(projectName, repoType, stages, c)
+	CreateRemoteRepositories(projectName, repoType, stages, c)
+	CreateVirtualRepositories(projectName, repoType, stages, c)
 }
 
 // CreateLocalRepositories generates all the local repositories
-func CreateLocalRepositories(projectName string, repoType string, stages []string) {
+func CreateLocalRepositories(projectName string, repoType string, stages []string, c *commonConfiguration) error {
 	log.Output("Create locals for ", projectName)
+
+	repositoryCreateCmd := repository.NewRepoCreateCommand().SetTemplatePath("templates/local-repo-template.json").SetRtDetails(c.details)
+	if err := commands.Exec(repositoryCreateCmd); err != nil {
+		return err
+	}
+	return nil
 }
 
 // CreateRemoteRepositories generates all the remote repository
-func CreateRemoteRepositories(projectName string, repoType string, stages []string) {
+func CreateRemoteRepositories(projectName string, repoType string, stages []string, c *commonConfiguration) error {
 	log.Output("Create remote for ", projectName)
+
+	repositoryCreateCmd := repository.NewRepoCreateCommand().SetTemplatePath("templates/remote-repo-template.json").SetRtDetails(c.details)
+	if err := commands.Exec(repositoryCreateCmd); err != nil {
+		return err
+	}
+	return nil
 }
 
 // CreateVirtualRepositories generates all the remote repository
-func CreateVirtualRepositories(projectName string, repoType string, stages []string) {
+func CreateVirtualRepositories(projectName string, repoType string, stages []string, c *commonConfiguration) error {
 	log.Output("Create virtual for ", projectName)
+
+	repositoryCreateCmd := repository.NewRepoCreateCommand().SetTemplatePath("templates/virtual-repo-template.json").SetRtDetails(c.details)
+	if err := commands.Exec(repositoryCreateCmd); err != nil {
+		return err
+	}
+	return nil
 }

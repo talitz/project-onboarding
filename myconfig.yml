@@ -1,6 +1,6 @@
 projects:
-    - name: ninja
-      repoType: maven
+    - name: artifactory-front-end
+      repoType: npm
       stages: 
         - dev
         - rc
@@ -9,3 +9,13 @@ projects:
         - dev
         - ops
         - devops
+
+    - name: artifactory-back-end
+      repoType: maven
+      stages: 
+        - dev
+        - prod
+      profiles:
+        - dev
+        - ops
+        - devops        
