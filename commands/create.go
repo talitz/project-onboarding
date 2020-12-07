@@ -1,19 +1,14 @@
 package commands
 
 import (
-	"encoding/json"
 	"errors"
-	"fmt"
-	"io/ioutil"
 	"os"
 	"strconv"
 
 	"github.com/jfrog/jfrog-cli-core/artifactory/commands"
-	"github.com/jfrog/jfrog-cli-core/artifactory/commands/repository"
-
+	"github.com/jfrog/jfrog-cli-core/artifactory/commands/curl"
 	"github.com/jfrog/jfrog-cli-core/plugins/components"
 	"github.com/jfrog/jfrog-client-go/utils/log"
-	"gopkg.in/yaml.v2"
 )
 
 // GetCreateCommand will create the repo and permissions
@@ -49,23 +44,6 @@ func getCreateFlags() []components.Flag {
 		},
 	}
 }
-
-// func geCreateFlags() []components.EnvVar {
-// 	return []components.EnvVar{
-// 		{
-// 			Name:        "HELLO_FROG_GREET_PREFIX",
-// 			Default:     "A new greet from your plugin template: ",
-// 			Description: "Adds a prefix to every greet.",
-// 		},
-// 	}
-// }
-
-// type helloConfiguration struct {
-// 	addressee string
-// 	shout     bool
-// 	repeat    int
-// 	prefix    string
-// }
 
 // Project describes a project to create
 type Project struct {
@@ -104,7 +82,7 @@ func createCmd(c *components.Context) error {
 }
 
 func doCreate(configFile string, dryRun bool, c *commonConfiguration) error {
-	var projectsToInit Projects
+	// var projectsToInit Projects
 
 	if dryRun {
 		log.Output("DRY RUN")
@@ -113,71 +91,44 @@ func doCreate(configFile string, dryRun bool, c *commonConfiguration) error {
 	}
 
 	// read our opened yaml file as a byte array.
-	byteValue, _ := ioutil.ReadFile(configFile)
+	// byteValue, _ := ioutil.ReadFile(configFile)
 
-	err := yaml.Unmarshal(byteValue, &projectsToInit)
+	// err := yaml.Unmarshal(byteValue, &projectsToInit)
 
-	if err != nil {
-		return errors.New("Errors occured when reading Yaml File ")
+	// if err != nil {
+	// 	return errors.New("Errors occured when reading Yaml File ")
+	// }
+
+	// for _, v := range projectsToInit.ArrProj {
+	// 	log.Output(v.Name)
+	// 	log.Output(v.RepoType)
+	// 	log.Output(v.Stages)
+	// 	// CreateRepositories(v.Name, v.RepoType, v.Stages, c)
+	// }
+	BuildConfigurationFile(c)
+	PatchConfigurationFile(c)
+	return nil
+}
+
+// BuildConfigurationFile is creating the relevant configuration.yml file based on the onboarding template that ran with the plugin
+func BuildConfigurationFile(c *commonConfiguration) error {
+	return nil
+}
+
+// PatchConfigurationFile is executing the configuration.yml file changes to the artifactory instance
+func PatchConfigurationFile(c *commonConfiguration) error {
+	arguments := []string{"-XPATCH", "/api/system/configuration", "-H", "\"Content-Type: application/yaml\"", "-T", "configuration.yml"}
+	curlCmd := curl.NewCurlCommand().SetArguments(arguments).SetRtDetails(c.details)
+
+	if err := commands.Exec(curlCmd); err != nil {
+		return err
 	}
-
-	for _, v := range projectsToInit.ArrProj {
-		log.Output(v.Name)
-		log.Output(v.RepoType)
-		log.Output(v.Stages)
-		CreateRepositories(v.Name, v.RepoType, v.Stages, c)
-	}
-
 	return nil
 }
 
 // CreateRepositories generates all the repositories
-func CreateRepositories(projectName string, repoType string, stages []string, c *commonConfiguration) {
-	CreateLocalRepositories(projectName, repoType, stages, c)
-	CreateRemoteRepositories(projectName, repoType, stages, c)
-	CreateVirtualRepositories(projectName, repoType, stages, c)
-}
+// func CreateRepositories(projectName string, repoType string, stages []string, c *commonConfiguration) {
 
-// CreateLocalRepositories generates all the local repositories
-func CreateLocalRepositories(projectName string, repoType string, stages []string, c *commonConfiguration) error {
-	log.Output("Create locals for ", projectName)
-	LocalRepositoryTemplate := LocalRepositoryTemplate{
-		key:         "local-repo-name",
-		packageType: "maven",
-		rclass:      "local",
-	}
-
-	file, _ := json.MarshalIndent(LocalRepositoryTemplate, "", " ")
-	err := ioutil.WriteFile("templates/local-repo-template-autocreated.json", file, 0644)
-	if err != nil {
-		fmt.Printf("Unable to write file: %v", err)
-	}
-	repositoryCreateCmd := repository.NewRepoCreateCommand().SetTemplatePath("templates/local-repo-template-autocreated.json").SetRtDetails(c.details)
-
-	if err := commands.Exec(repositoryCreateCmd); err != nil {
-		return err
-	}
-	return nil
-}
-
-// CreateRemoteRepositories generates all the remote repository
-func CreateRemoteRepositories(projectName string, repoType string, stages []string, c *commonConfiguration) error {
-	log.Output("Create remote for ", projectName)
-
-	repositoryCreateCmd := repository.NewRepoCreateCommand().SetTemplatePath("templates/remote-repo-template.json").SetRtDetails(c.details)
-	if err := commands.Exec(repositoryCreateCmd); err != nil {
-		return err
-	}
-	return nil
-}
-
-// CreateVirtualRepositories generates all the remote repository
-func CreateVirtualRepositories(projectName string, repoType string, stages []string, c *commonConfiguration) error {
-	log.Output("Create virtual for ", projectName)
-
-	repositoryCreateCmd := repository.NewRepoCreateCommand().SetTemplatePath("templates/virtual-repo-template.json").SetRtDetails(c.details)
-	if err := commands.Exec(repositoryCreateCmd); err != nil {
-		return err
-	}
-	return nil
-}
+// 	// CreateLocalRepositories(projectName, repoType, stages, c)
+// 	// CreateRemoteRepositories(projectName, repoType, stages, c)
+// 	// CreateVirtualRepositories(projectName, repoType, stages, c)

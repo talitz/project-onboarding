@@ -1,0 +1,5 @@
+localRepositories:
+     docker-tal-local:
+          type: docker
+     maven-test-tal-local:
+          type: maven
