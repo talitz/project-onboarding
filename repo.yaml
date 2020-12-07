@@ -1,0 +1,83 @@
+localRepositories:   
+  dark-dev-nuget-local:
+    type: nuget
+    forceNugetAuthentication: true
+    repoLayout: nuget-default 
+    xray:   
+      enabled: true
+  dark-rc-nuget-local:
+    type: nuget
+    repoLayout: nuget-default 
+    xray:   
+      enabled: true
+  dark-dev-docker-local:
+    type: docker
+    repoLayout: simple-default 
+    xray:   
+      enabled: true
+  dark-release-docker-local:
+    type: docker
+    repoLayout: simple-default 
+    xray:   
+      enabled: true
+  dark-dev-generic-local:
+    type: generic
+    repoLayout: simple-default 
+    xray:   
+      enabled: true
+  dark-rc-generic-local:
+    type: generic
+    repoLayout: simple-default 
+    xray:   
+      enabled: true
+remoteRepositories: 
+  dark-nugetorg-remote:
+    type: nuget
+    repoLayout: nuget-default 
+    url: https://www.nuget.org
+    forceNugetAuthentication: true
+    xray:   
+      enabled: true
+  dark-dockerhub-remote:
+    type: docker 
+    url: https://registry-1.docker.io/
+    dockerApiVersion: V2
+    repoLayout: simple-default 
+    enableTokenAuthentication: true
+    xray:   
+      enabled: true
+  dark-mcr-remote:
+    type: docker 
+    url: https://mcr.microsoft.com
+    dockerApiVersion: V2
+    repoLayout: simple-default 
+    enableTokenAuthentication: true
+    xray:   
+      enabled: true
+virtualRepositories: 
+  dark-nuget:
+    type: nuget
+    repoLayout: nuget-default 
+    forceNugetAuthentication: true
+    repositories:
+      - dark-dev-nuget-local
+      - dark-rc-nuget-local
+      - dark-nugetorg-remote
+    defaultDeploymentRepo: dark-dev-nuget-local
+  dark-docker:
+    type: docker
+    dockerApiVersion: V2
+    repoLayout: simple-default 
+    repositories:   
+      - dark-dev-docker-local
+      - dark-release-docker-local
+      - dark-dockerhub-remote
+      - dark-mcr-remote
+    defaultDeploymentRepo: dark-dev-docker-local
+  dark-generic:
+    type: generic
+    repoLayout: simple-default 
+    repositories:   
+      - dark-dev-generic-local
+      - dark-rc-generic-local
+    defaultDeploymentRepo: dark-dev-generic-local
