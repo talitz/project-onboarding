@@ -1,40 +1,32 @@
-# hello-frog
+# onboarding
 
 ## About this plugin
-This plugin is a template and a functioning example for a basic JFrog CLI plugin. 
-This README shows the expected structure of your plugin's README.
+This plugin aims to quickly starts with Artifactory by creating the right repository structure and permissions
 
 ## Installation with JFrog CLI
 Installing the latest version:
 
-`$ jfrog plugin install hello-frog`
+`$ jfrog plugin install onboarding`
 
 Installing a specific version:
 
-`$ jfrog plugin install hello-frog@version`
+`$ jfrog plugin install onboarding@version`
 
 Uninstalling a plugin
 
-`$ jfrog plugin uninstall hello-frog`
+`$ jfrog plugin uninstall onboarding`
 
 ## Usage
 ### Commands
-* hello
+* create
     - Arguments:
-        - addressee - The name of the person you would like to greet.
+        - pathToYamlFile - location of the config YAML file
     - Flags:
-        - shout: Makes output uppercase **[Default: false]**
-        - repeat: Greets multiple times **[Default: 1]**
+        - dry-run: Only outputs command to be executed **[Default: true]**
     - Example:
     ```
-  $ jfrog hello-frog hello world --shout --repeat=2
-  
-  NEW GREETING: HELLO WORLD!
-  NEW GREETING: HELLO WORLD!
+  $ jfrog onboarding create myconfig.yaml --dry-run=false
   ```
-
-### Environment variables
-* HELLO_FROG_GREET_PREFIX - Adds a prefix to every greet **[Default: New greeting: ]**
 
 ## Additional info
 None.
