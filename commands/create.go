@@ -105,17 +105,23 @@ func doCreate(configFile string, dryRun bool, c *commonConfiguration) error {
 	// 	log.Output(v.Stages)
 	// 	// CreateRepositories(v.Name, v.RepoType, v.Stages, c)
 	// }
+	ParseOnboardingTemplate(c)
 	BuildConfigurationFile(c)
 	PatchConfigurationFile(c)
 	return nil
 }
 
-// BuildConfigurationFile is creating the relevant configuration.yml file based on the onboarding template that ran with the plugin
+// ParseOnboardingTemplate reads the template
+func ParseOnboardingTemplate(c *commonConfiguration) error {
+	return nil
+}
+
+// BuildConfigurationFile builds the configuration.yml file
 func BuildConfigurationFile(c *commonConfiguration) error {
 	return nil
 }
 
-// PatchConfigurationFile is executing the configuration.yml file changes to the artifactory instance
+// PatchConfigurationFile executing the configuration.yml file changes to the artifactory instance
 func PatchConfigurationFile(c *commonConfiguration) error {
 	arguments := []string{"-XPATCH", "/api/system/configuration", "-H", "\"Content-Type: application/yaml\"", "-T", "configuration.yml"}
 	curlCmd := curl.NewCurlCommand().SetArguments(arguments).SetRtDetails(c.details)
