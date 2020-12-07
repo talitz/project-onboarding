@@ -1,7 +1,9 @@
 package commands
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"strconv"
@@ -77,6 +79,11 @@ type Projects struct {
 	ArrProj []Project `yaml:"projects"`
 }
 
+// LocalRepositoryTemplate Defines a local repository template
+type LocalRepositoryTemplate struct {
+	key, packageType, rclass string
+}
+
 func createCmd(c *components.Context) error {
 	conf, err := createCommonConfiguration(c)
 
@@ -134,8 +141,19 @@ func CreateRepositories(projectName string, repoType string, stages []string, c 
 // CreateLocalRepositories generates all the local repositories
 func CreateLocalRepositories(projectName string, repoType string, stages []string, c *commonConfiguration) error {
 	log.Output("Create locals for ", projectName)
+	LocalRepositoryTemplate := LocalRepositoryTemplate{
+		key:         "local-repo-name",
+		packageType: "maven",
+		rclass:      "local",
+	}
 
-	repositoryCreateCmd := repository.NewRepoCreateCommand().SetTemplatePath("templates/local-repo-template.json").SetRtDetails(c.details)
+	file, _ := json.MarshalIndent(LocalRepositoryTemplate, "", " ")
+	err := ioutil.WriteFile("templates/local-repo-template-autocreated.json", file, 0644)
+	if err != nil {
+		fmt.Printf("Unable to write file: %v", err)
+	}
+	repositoryCreateCmd := repository.NewRepoCreateCommand().SetTemplatePath("templates/local-repo-template-autocreated.json").SetRtDetails(c.details)
+
 	if err := commands.Exec(repositoryCreateCmd); err != nil {
 		return err
 	}
