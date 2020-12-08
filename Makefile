@@ -2,4 +2,6 @@ build:
 	go build -o onboarding main.go
 
 run:
-	go run main.go
+	./onboarding create simple.yml
+
+all: build run

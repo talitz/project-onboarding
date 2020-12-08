@@ -1,0 +1,21 @@
+projects:
+  - name: ninja
+    repoType: maven
+    stages:
+      - dev
+      - rc
+      - release
+    profiles:
+      - dev
+      - ops
+      - devops
+  - name: pirate
+    repoType: npm
+    stages:
+      - dev
+      - uat
+      - prod
+    profiles:
+      - dev
+      - ops
+      - devops
