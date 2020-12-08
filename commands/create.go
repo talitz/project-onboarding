@@ -240,11 +240,6 @@ func genrateYamlFile(projectName string, r []Repository) error {
 	return nil
 }
 
-// BuildConfigurationFile builds the configuration.yml file
-// func BuildConfigurationFile(c *commonConfiguration) error {
-// 	return nil
-// }
-
 // PatchConfigurationFile executing the configuration.yml file changes to the artifactory instance
 func PatchConfigurationFile(c *commonConfiguration, projectName string) error {
 	arguments := []string{"-XPATCH", "/api/system/configuration", "-H", "\"Content-Type: application/yaml\"", "-T", projectName + ".yml"}
@@ -255,10 +250,3 @@ func PatchConfigurationFile(c *commonConfiguration, projectName string) error {
 	}
 	return nil
 }
-
-// CreateRepositories generates all the repositories
-// func CreateRepositories(projectName string, repoType string, stages []string, c *commonConfiguration) {
-
-// 	// CreateLocalRepositories(projectName, repoType, stages, c)
-// 	// CreateRemoteRepositories(projectName, repoType, stages, c)
-// 	// CreateVirtualRepositories(projectName, repoType, stages, c)
