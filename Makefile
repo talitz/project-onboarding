@@ -2,6 +2,6 @@ build:
 	go build -o onboarding main.go
 
 run:
-	./onboarding create simple.yml
+	cp onboarding ~/.jfrog/plugins
 
 all: build run

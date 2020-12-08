@@ -115,7 +115,7 @@ func doCreate(configFile string, dryRun bool, c *commonConfiguration) error {
 	}
 	ParseOnboardingTemplate(c, configFile)
 	//	BuildConfigurationFile(c)
-	//	PatchConfigurationFile(c)
+
 	return nil
 }
 
@@ -177,7 +177,7 @@ func ParseOnboardingTemplate(c *commonConfiguration, configFile string) error {
 			repoRefInfo[project.RepoType].Layout, "", aggregatedRepo, ""})
 
 		genrateYamlFile(project.Name, lstRepo)
-
+		PatchConfigurationFile(c, project.Name)
 	}
 
 	return nil
@@ -246,8 +246,8 @@ func genrateYamlFile(projectName string, r []Repository) error {
 // }
 
 // PatchConfigurationFile executing the configuration.yml file changes to the artifactory instance
-func PatchConfigurationFile(c *commonConfiguration) error {
-	arguments := []string{"-XPATCH", "/api/system/configuration", "-H", "\"Content-Type: application/yaml\"", "-T", "configuration.yml"}
+func PatchConfigurationFile(c *commonConfiguration, projectName string) error {
+	arguments := []string{"-XPATCH", "/api/system/configuration", "-H", "\"Content-Type: application/yaml\"", "-T", projectName + ".yml"}
 	curlCmd := curl.NewCurlCommand().SetArguments(arguments).SetRtDetails(c.details)
 
 	if err := commands.Exec(curlCmd); err != nil {
