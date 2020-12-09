@@ -1,10 +1,13 @@
 projects:
-  - name: ninja
+  - name: shadow
     repoType: maven
     stages:
-      - dev
-      - rc
-      - release
+      - name: dev
+        owner: devops
+      - name: rc
+        owner: devops
+      - name: release
+        owner: devops
     profiles:
       - dev
       - ops
@@ -12,10 +15,13 @@ projects:
   - name: pirate
     repoType: npm
     stages:
-      - dev
-      - uat
-      - prod
+      - name: dev
+        owner: devops
+      - name: release
+        owner: devops
+      - name: uat
+        owner: devops
     profiles:
-      - dev
-      - ops
+      - developer
+      - operator
       - devops
