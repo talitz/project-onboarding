@@ -204,8 +204,8 @@ func ParseOnboardingTemplate(c *commonConfiguration, configFile string, profiles
 		}
 
 		// get repo name for remote based on package type
-		name = repoRefInfo[project.RepoType].Name + "-remote"
-		//		log.Output(name)
+		name = project.Name + "-" + repoRefInfo[project.RepoType].Name + "-remote"
+		//log.Output(name)
 
 		lstRepo = append(lstRepo, Repository{
 			name,

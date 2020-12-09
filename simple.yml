@@ -1,6 +1,6 @@
 projects:
-  - name: shadow
-    repoType: maven
+  - name: doe
+    repoType: docker
     stages:
       - name: dev
         owner: devops
@@ -12,6 +12,7 @@ projects:
       - dev
       - ops
       - devops
+      - sec
   - name: pirate
     repoType: npm
     stages:

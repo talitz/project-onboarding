@@ -44,7 +44,7 @@ func checkInputs(c *components.Context) error {
 		return errors.New("Wrong number of arguments. Expected: 1, " + "Received: " + strconv.Itoa(len(c.Arguments)))
 	}
 	if strings.Contains(c.Arguments[0], "*") {
-		return errors.New("Wildcards are not supported in paths.")
+		return errors.New("Wildcards are not supported in paths")
 	}
 	return nil
 }

@@ -1,0 +1,25 @@
+localRepositories:
+  doe-docker-dev-local:
+    type: docker
+    repoLayout: simple-default
+  doe-docker-rc-local:
+    type: docker
+    repoLayout: simple-default
+  doe-docker-release-local:
+    type: docker
+    repoLayout: simple-default
+remoteRepositories:
+  doe-dockerub-remote:
+    type: docker
+    repoLayout: simple-default
+    url: https://dockerhub.io
+virtualRepositories:
+  doe-docker:
+    type: docker
+    repoLayout: simple-default
+    repositories:
+      - doe-docker-dev-local
+      - doe-docker-rc-local
+      - doe-docker-release-local
+      - doe-dockerub-remote
+    defaultDeploymentRepo: doe-docker-dev-local

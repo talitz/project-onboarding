@@ -1,0 +1,25 @@
+localRepositories:
+  pirate-npm-dev-local:
+    type: npm
+    repoLayout: simple-default
+  pirate-npm-release-local:
+    type: npm
+    repoLayout: simple-default
+  pirate-npm-uat-local:
+    type: npm
+    repoLayout: simple-default
+remoteRepositories:
+  pirate-npmjs-remote:
+    type: npm
+    repoLayout: simple-default
+    url: https://www.npmjs.org
+virtualRepositories:
+  pirate-npm:
+    type: npm
+    repoLayout: simple-default
+    repositories:
+      - pirate-npm-dev-local
+      - pirate-npm-release-local
+      - pirate-npm-uat-local
+      - pirate-npmjs-remote
+    defaultDeploymentRepo: pirate-npm-dev-local

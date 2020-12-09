@@ -1,0 +1,25 @@
+localRepositories:
+  shadow-maven-dev-local:
+    type: maven
+    repoLayout: maven-2-default
+  shadow-maven-rc-local:
+    type: maven
+    repoLayout: maven-2-default
+  shadow-maven-release-local:
+    type: maven
+    repoLayout: maven-2-default
+remoteRepositories:
+  jcenter-remote:
+    type: maven
+    repoLayout: maven-2-default
+    url: https://jcenter.bintray.io
+virtualRepositories:
+  shadow-maven:
+    type: maven
+    repoLayout: maven-2-default
+    repositories:
+      - shadow-maven-dev-local
+      - shadow-maven-rc-local
+      - shadow-maven-release-local
+      - jcenter-remote
+    defaultDeploymentRepo: shadow-maven-dev-local
